@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1e3942">
+  <title>FireWatch Bolivia X · Tunari</title>
+  <link rel="icon" href="firewatch.png">
+  <link rel="stylesheet" href="vendor/leaflet.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="visor.css">
+  <script defer src="vendor/leaflet.min.js"></script>
+  <script defer src="data/distritos.js"></script>
+  <script defer src="data/firms.js"></script>
+  <script defer src="analisis.js"></script>
+  <script defer src="terreno.js"></script>
+  <script defer src="prediccion.js"></script>
+  <script defer src="visor.js"></script>
+</head>
+<body class="fw-shell">
+  <header class="fw-shell-header">
+    <a class="fw-shell-logo" href="#mapa"><img src="firewatch.png" width="36" height="36" alt=""> FIREWATCH BOLIVIA X</a>
+    <button id="menu" class="fw-shell-menu-boton" type="button" aria-expanded="false" aria-label="Menú principal">☰</button>
+    <nav class="fw-shell-nav" id="nav" aria-label="Navegación">
+      <a href="#mapa">Mapa</a><a href="#simulacion">Simulación</a><a href="#estadisticas">Histórico</a><a href="#fuentes">Datos y fuentes</a>
+    </nav>
+  </header>
+
+  <main class="release">
+    <header class="hero">
+      <div><p class="eyebrow">MONITOREO SATELITAL · COCHABAMBA</p><h1>Vigilancia del Tunari</h1><p>Detecciones térmicas MODIS y VIIRS, análisis y simulación de campo.</p></div>
+      <div class="hero-actions"><button type="button" id="archive-main" class="button outline">Ver histórico regional</button><button type="button" id="simulate-main" class="button primary">Simular foco de calor</button></div>
+    </header>
+
+    <section data-screen="mapa" aria-label="Mapa de vigilancia">
+      <div class="kpis">
+        <article><span>Detecciones oficiales</span><strong id="count">0</strong><small id="coverage-label">Área de interés del Tunari</small></article>
+        <article><span>MODIS</span><strong id="modis-count">0</strong><small>Detecciones por sensor</small></article>
+        <article><span>VIIRS</span><strong id="viirs-count">0</strong><small>Detecciones por sensor</small></article>
+        <article><span>Focos simulados</span><strong id="demo-count">0</strong><small>Escenario de presentación</small></article>
+      </div>
+      <div class="dashboard">
+        <article class="card map-card">
+          <header class="card-header">
+            <div><h2>Mapa de actividad térmica</h2><p id="map-source"></p></div>
+            <div class="switch" aria-label="Vista de mapa">
+              <button type="button" id="two-d" aria-pressed="false">2D satelital</button>
+              <button type="button" id="three-d" aria-pressed="true">3D relieve</button>
+            </div>
+          </header>
+          <div class="map-frame">
+            <div id="terrain" class="terrain">
+              <canvas class="scene" id="terrain-scene" aria-hidden="true"></canvas>
+              <canvas class="hud" id="terrain-hud" tabindex="0" aria-label="Relieve simulado. Usa las flechas para girar y más o menos para acercar."></canvas>
+            </div>
+            <div id="map" aria-label="Mapa georreferenciado" hidden></div>
+            <span id="terrain-caption" class="badge terrain-caption">Relieve simulado</span>
+            <div class="map-nav">
+              <button type="button" id="center" aria-label="Centrar mapa" title="Centrar mapa">⊙</button>
+              <button type="button" id="zoom-in" aria-label="Acercar" title="Acercar">+</button>
+              <button type="button" id="zoom-out" aria-label="Alejar" title="Alejar">−</button>
+            </div>
+            <div class="legend"><span><i class="modis"></i>MODIS</span><span><i class="viirs"></i>VIIRS</span><span><i class="demo"></i>Simulación</span></div>
+          </div>
+          <div class="filters">
+            <label>Zona<select id="region"><option value="local">Área del Tunari</option><option value="regional">Ventana regional</option></select></label>
+            <label>Fecha UTC<select id="map-day"><option value="all">Toda la consulta</option></select></label>
+            <label>Sensor<select id="sensor"><option value="all">MODIS y VIIRS</option><option>MODIS</option><option>VIIRS</option></select></label>
+            <label id="source-control" hidden>Consulta<select id="source"><option value="archive">Archivo Módulo 03</option><option value="live">Última consulta en vivo</option></select></label>
+            <label id="imagery-control" hidden>Fondo 2D<select id="imagery"><option value="nasa">NASA GIBS</option><option value="osm">OpenStreetMap</option><option value="none">Cartografía local</option></select></label>
+          </div>
+          <p id="imagery-status" class="map-note" hidden></p>
+        </article>
+        <aside class="card inspector">
+          <p id="inspector-source" class="badge">Consulta archivada</p>
+          <h2 id="inspector-title">Área del Tunari</h2>
+          <p id="inspector-note" class="body-note"></p>
+          <dl id="inspector-details" class="details"></dl>
+          <a href="#simulacion" class="button outline" id="open-simulator" hidden>Abrir escenario →</a>
+          <button id="seed-scenario" type="button" class="button outline" hidden>Proyectar escenario desde esta detección →</button>
+          <div id="map-playback" class="playback" hidden>
+            <div><b id="map-hour">+0 h</b><span id="map-hectares"></span></div>
+            <input id="map-time" type="range" min="0" max="24" step=".5" value="0" aria-label="Horas de simulación">
+            <div class="actions"><button id="map-play" class="button outline" type="button">Pausar</button><button type="button" id="clear-map" class="button outline">Quitar foco</button></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section data-screen="simulacion" class="split" hidden aria-label="Simulación">
+      <article class="card padded">
+        <p class="eyebrow">ESCENARIO SIMULADO</p><h2>Condiciones del foco</h2>
+        <p id="scenario-location">Punto de demostración en el Distrito 13.</p>
+        <form id="scenario-form">
+          <div class="form-grid">
+            <label>Temperatura (°C)<input id="temperature" type="number" min="0" max="65" value="36" required></label>
+            <label>Humedad (%)<input id="humidity" type="number" min="0" max="100" value="15" required></label>
+            <label>Viento (km/h)<input id="wind" type="number" min="0" max="120" value="42" required></label>
+            <label>Dirección (°)<input id="bearing" type="number" min="0" max="359" value="60" required></label>
+            <label>Precipitación (mm)<input id="rain" type="number" min="0" max="200" value="0" required></label>
+            <label>Cobertura<select id="cover"><option value="mixta">Mixta</option><option value="bosque">Bosque</option><option value="pastizal">Pastizal</option></select></label>
+          </div>
+          <button type="submit" class="button primary">Simular foco de calor</button>
+        </form>
+      </article>
+      <article class="card padded">
+        <h2>Proyección del escenario</h2>
+        <p>El cálculo combina temperatura, humedad, viento y focos cercanos. La geometría proyecta el avance según dirección del viento y cobertura.</p>
+        <div id="sim-result" class="result-block"></div>
+        <div class="actions"><a href="#mapa" class="button outline">Ver mapa</a><button id="clear-demo" class="button outline" type="button" hidden>Quitar simulación</button></div>
+      </article>
+    </section>
+
+    <section data-screen="estadisticas" class="split" hidden aria-label="Histórico">
+      <article class="card padded"><h2>Histórico de detecciones por día UTC</h2><p id="stat-origin"></p><div class="chart-legend"><span><i class="modis"></i>MODIS</span><span><i class="viirs"></i>VIIRS</span></div><div id="daily-chart" class="data-chart"></div><p>Selecciona una fecha para abrir sus detecciones en el mapa. El último día se contabiliza hasta la hora de corte de la consulta.</p></article>
+      <article class="card padded"><h2>Exportar resultados</h2><p>La exportación oficial utiliza los filtros de zona, sensor y fecha del mapa. El escenario simulado tiene su propio archivo.</p>
+        <div class="actions"><button id="export-real" class="button primary" type="button">CSV oficial</button><button id="export-sim" class="button outline" type="button" disabled>GeoJSON de simulación</button></div>
+      </article>
+    </section>
+
+    <section data-screen="fuentes" class="split" hidden aria-label="Datos y fuentes">
+      <article class="card padded"><h2>NASA FIRMS</h2><p id="connection-note">Para consultar FIRMS en vivo, abre el servidor local con <code>ABRIR_FIREWATCH.bat</code>. La copia archivada está disponible desde GitHub Pages.</p>
+        <form id="firms-form" hidden>
+          <label>MAP_KEY NASA<input type="password" id="firms-key" autocomplete="off" placeholder="Clave de 32 caracteres o variable local"></label>
+          <label>Días de consulta<select id="firms-days"><option value="2">2 días</option><option value="1">1 día</option><option value="5">5 días</option></select></label>
+          <button id="refresh-firms" class="button primary" type="submit">Actualizar área del Tunari</button>
+        </form>
+        <p id="live-status" role="status"></p>
+        <p><a href="https://firms.modaps.eosdis.nasa.gov/api/map_key" target="_blank" rel="noreferrer">Solicitar MAP_KEY</a> · <a href="https://firms.modaps.eosdis.nasa.gov/api/area" target="_blank" rel="noreferrer">Documentación de FIRMS</a></p>
+      </article>
+      <article class="card padded"><h2>Cartografía y procedencia</h2>
+        <p>La imagen satelital en línea proviene de NASA GIBS. Los 15 límites distritales corresponden al GeoJSON municipal. El recuadro del Tunari delimita el área de consulta FIRMS.</p>
+        <label>Cargar límite vectorial del parque<input type="file" id="park-file" accept=".geojson,.json,application/geo+json"></label>
+        <p id="park-note" role="status">El archivo incluye el área de consulta y los distritos. Puedes incorporar aquí el polígono oficial del parque.</p>
+        <p><a href="https://recursosgamc.cochabamba.bo/api-doc" target="_blank" rel="noreferrer">Portal de datos geográficos del GAMC</a></p>
+      </article>
+    </section>
+  </main>
+  <footer class="fw-shell-footer"><span>FireWatch Bolivia X</span><span>NASA FIRMS · GAMC · Cochabamba</span></footer>
+</body>
+</html>

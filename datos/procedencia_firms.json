@@ -1,0 +1,38 @@
+{
+  "regional": {
+    "proveedor": "NASA FIRMS",
+    "tipo": "observaciones_satelitales",
+    "inicio_consulta_utc": "2026-11-15T14:41:27.597334+00:00",
+    "referencia_utc": "2026-11-15T14:41:37.992996+00:00",
+    "area_oeste_sur_este_norte": "-69.7,-22.9,-57.4,-9.6",
+    "dias": 2,
+    "fuentes": {
+      "MODIS_NRT": 267,
+      "VIIRS_SNPP_NRT": 0,
+      "VIIRS_NOAA20_NRT": 1681,
+      "VIIRS_NOAA21_NRT": 1174
+    },
+    "detecciones_validas": 3122,
+    "estado": "procesado",
+    "ejecucion_modulo03": "20261115T144127Z_33001bcb",
+    "archivo": "firms_regional_2026-11-14_15.csv",
+    "sha256": "a8d68cc8bd42b9efad3d880ab08873190fb49e422fda93e474650363300a33de"
+  },
+  "tunari": {
+    "proveedor": "NASA FIRMS",
+    "tipo": "observaciones_satelitales",
+    "inicio_consulta_utc": "2026-11-15T15:24:02.369679+00:00",
+    "referencia_utc": "2026-11-15T15:24:16.569189+00:00",
+    "area_oeste_sur_este_norte": "-66.74,-17.56,-65.9,-16.9",
+    "dias": 2,
+    "fuentes": {
+      "MODIS_NRT": 0,
+      "VIIRS_SNPP_NRT": 0,
+      "VIIRS_NOAA20_NRT": 0,
+      "VIIRS_NOAA21_NRT": 0
+    },
+    "detecciones_validas": 0,
+    "estado": "sin_detecciones",
+    "ejecucion_modulo03": "20261115T152402Z_fb8a7a18"
+  }
+}

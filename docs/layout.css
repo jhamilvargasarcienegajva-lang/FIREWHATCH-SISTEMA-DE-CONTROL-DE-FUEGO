@@ -1,0 +1,131 @@
+/* DISEÑO GENERAL FIREWATCH BOLIVIA X */
+
+.fw-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f1faee;
+  color: #1d3557;
+  font-family: Inter, Arial, sans-serif;
+}
+
+/* ENCABEZADO PRINCIPAL */
+
+.fw-shell-header {
+  background: #264653;
+  color: white;
+  padding: 17px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  position: sticky;
+  top: 0;
+  z-index: 2000;
+}
+
+.fw-shell-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.fw-shell-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.fw-shell-nav a {
+  color: #d7e8e5;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 0;
+}
+
+.fw-shell-nav a:hover {
+  color: white;
+}
+
+.fw-shell-nav a.actual {
+  color: white;
+  border-bottom: 2px solid #2a9d8f;
+}
+
+.fw-shell-menu-boton {
+  display: none;
+  border: 0;
+  color: white;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* PIE DE PAGINA */
+
+.fw-shell-footer {
+  background: #264653;
+  color: #d2e2df;
+  padding: 22px 5%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .fw-shell-menu-boton {
+    display: flex;
+  }
+
+  .fw-shell-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #264653;
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    box-shadow: 0 15px 25px #0003;
+  }
+
+  .fw-shell-nav.abierto {
+    display: flex;
+  }
+
+  .fw-shell-nav a {
+    padding: 12px;
+    border-radius: 7px;
+  }
+
+  .fw-shell-nav a.actual {
+    background: #345d68;
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .fw-shell-header {
+    padding: 16px;
+  }
+
+  .fw-shell-logo {
+    font-size: 14px;
+  }
+
+  .fw-shell-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+}

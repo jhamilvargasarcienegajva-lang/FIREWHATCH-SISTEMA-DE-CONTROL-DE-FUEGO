@@ -1,0 +1,15 @@
+FIREWATCH BOLIVIA X · VIGILANCIA DEL TUNARI
+
+PARA PRESENTAR
+1. Extrae el ZIP y abre ABRIR_DEMO.bat.
+   También puedes abrir ABRIR_DEMO.html desde Chrome o Edge.
+2. Pulsa «Simular foco de calor». Aparecerá un escenario en el Distrito 13.
+3. Usa el control de tiempo para revisar la propagación hasta +24 h.
+   Puedes pausar, ajustar condiciones y volver a simular.
+4. En «Histórico» puedes exportar datos oficiales o el escenario.
+
+Pulsa «Ver histórico regional» para mostrar los datos NASA FIRMS del
+14 y 15 de noviembre de 2026 y abrir cada fecha en el mapa.
+El relieve, las condiciones y el foco de presentación son simulados.
+Para actualizar NASA FIRMS, abre ABRIR_FIREWATCH.bat y utiliza tu MAP_KEY.
+En GitHub Pages, publica la carpeta /docs desde la rama main.
